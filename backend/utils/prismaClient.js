@@ -1,0 +1,13 @@
+const { PrismaClient } = require('../generated/prisma');
+
+// Singleton Prisma client to avoid exhausting DB connections in dev
+let prisma;
+
+if (!global.__prisma) {
+  global.__prisma = new PrismaClient();
+}
+
+prisma = global.__prisma;
+
+module.exports = prisma;
+

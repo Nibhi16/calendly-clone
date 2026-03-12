@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+enum BookingStatus {
+  CONFIRMED
+  CANCELED
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  timeZone  String   @default("UTC")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  eventTypes     EventType[]
+  bookingsAsHost Booking[]      @relation("HostBookings")
+  availabilities Availability[]
+}
+
+model EventType {
+  id              String   @id @default(cuid())
+  title           String
+  slug            String   @unique
+  durationMinutes Int
+  description     String?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  bookings Booking[]
+}
+
+model Availability {
+  id        String    @id @default(cuid())
+  userId    String
+  dayOfWeek DayOfWeek
+  startTime Int
+  endTime   Int
+  timeZone  String
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Booking {
+  id            String        @id @default(cuid())
+  eventTypeId   String
+  hostId        String
+  guestEmail    String
+  guestName     String?
+  status        BookingStatus @default(CONFIRMED)
+  startTime     DateTime
+  endTime       DateTime
+  hostTimeZone  String
+  guestTimeZone String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  eventType EventType @relation(fields: [eventTypeId], references: [id], onDelete: Cascade)
+  host      User      @relation("HostBookings", fields: [hostId], references: [id], onDelete: Cascade)
+}
