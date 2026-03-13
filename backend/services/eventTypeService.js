@@ -13,12 +13,7 @@ async function createEventType(userId, data) {
     description,
     durationMinutes,
     slug,
-    visibility,
     isActive,
-    bufferBeforeMin,
-    bufferAfterMin,
-    minNoticeMinutes,
-    maxNoticeDays
   } = data;
 
   return prisma.eventType.create({
@@ -27,12 +22,7 @@ async function createEventType(userId, data) {
       description,
       durationMinutes,
       slug,
-      visibility,
       isActive: isActive ?? true,
-      bufferBeforeMin: bufferBeforeMin ?? 0,
-      bufferAfterMin: bufferAfterMin ?? 0,
-      minNoticeMinutes,
-      maxNoticeDays,
       userId
     }
   });
@@ -49,9 +39,11 @@ async function updateEventType(userId, id, data) {
     throw error;
   }
 
+  const { title, description, durationMinutes, slug, isActive } = data;
+
   return prisma.eventType.update({
     where: { id },
-    data
+    data: { title, description, durationMinutes, slug, isActive }
   });
 }
 

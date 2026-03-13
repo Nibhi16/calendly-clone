@@ -30,12 +30,33 @@ export default function InviteUserModal({ open, onClose }: Props) {
   if (!open) return null;
 
   const hasEmail = emails.trim().length > 0;
-
-  function handleSubmit(e: React.FormEvent) {
+  
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!hasEmail) return;
-    // In a real app you would call an invite API here.
-    setSuccess('Invitations sent successfully.');
+  
+    try {
+      const emailList = emails.split(',').map(e => e.trim()).filter(Boolean);
+  
+      const res = await fetch('http://localhost:4000/invite', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          emails: emailList,
+          accessLevel: role
+        })
+      });
+  
+      const data = await res.json();
+  
+      if (res.ok) {
+        setSuccess('Invitations sent successfully.');
+      } else {
+        setSuccess(data.message || 'Something went wrong.');
+      }
+    } catch (err) {
+      setSuccess('Failed to send. Is the backend running?');
+    }
   }
 
   function stop(e: React.MouseEvent) {

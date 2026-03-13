@@ -1,17 +1,16 @@
-require('dotenv').config()
-const { PrismaClient } = require('../generated/prisma');
+require('dotenv').config();
+const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
 async function main() {
   // Default user
   const user = await prisma.user.upsert({
-    where: { email: 'demo@calendly-clone.test' },
+    where: { email: 'user@MeetFlow.test' },
     update: {},
     create: {
-      email: 'demo@calendly-clone.test',
-      name: 'Demo User',
-      username: 'demo',
+      email: 'user@MeetFlow.test',
+      name: 'User',
       timeZone: 'UTC'
     }
   });
@@ -25,7 +24,6 @@ async function main() {
       description: 'Quick catch up or intro call.',
       durationMinutes: 30,
       slug: '30-min-meeting',
-      visibility: 'PUBLIC',
       userId: user.id
     }
   });
@@ -38,7 +36,6 @@ async function main() {
       description: 'Longer conversation or interview.',
       durationMinutes: 60,
       slug: '60-min-meeting',
-      visibility: 'PUBLIC',
       userId: user.id
     }
   });

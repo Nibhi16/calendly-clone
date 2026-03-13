@@ -1,51 +1,29 @@
 const prisma = require("../utils/prismaClient");
 
-/**
- * Get all availability windows for a user
- */
 async function getAvailabilityForUser(userId) {
   return prisma.availability.findMany({
-    where: {
-      userId,
-      isActive: true
-    },
-    orderBy: [
-      { dayOfWeek: "asc" },
-      { startTime: "asc" }
-    ]
+    where: { userId, isActive: true },
+    orderBy: [{ dayOfWeek: "asc" }, { startTime: "asc" }]
   });
 }
 
-/**
- * Create a new availability window
- */
 async function createAvailability(userId, data) {
-  const {
-    dayOfWeek,
-    startTime,
-    endTime,
-    timeZone,
-    eventTypeId,
-    isActive
-  } = data;
+  const { dayOfWeek, startTime, endTime, timeZone, isActive } = data;
 
-  // Validate time range
   if (startTime < 0 || endTime > 1440 || endTime <= startTime) {
     const error = new Error("Invalid time range");
     error.status = 400;
     throw error;
   }
 
-  // Prevent overlapping availability windows
   const overlapping = await prisma.availability.findFirst({
     where: {
       userId,
       dayOfWeek,
       isActive: true,
-      eventTypeId: eventTypeId || null,
       NOT: {
         OR: [
-          { endTime: { lte: startTime } }, 
+          { endTime: { lte: startTime } },
           { startTime: { gte: endTime } }
         ]
       }
@@ -65,21 +43,14 @@ async function createAvailability(userId, data) {
       startTime,
       endTime,
       timeZone,
-      eventTypeId: eventTypeId || null,
       isActive: isActive ?? true
     }
   });
 }
 
-/**
- * Update an availability window
- */
 async function updateAvailability(userId, id, data) {
   const existing = await prisma.availability.findFirst({
-    where: {
-      id,
-      userId
-    }
+    where: { id, userId }
   });
 
   if (!existing) {
@@ -87,22 +58,18 @@ async function updateAvailability(userId, id, data) {
     error.status = 404;
     throw error;
   }
+
+  const { dayOfWeek, startTime, endTime, timeZone, isActive } = data;
 
   return prisma.availability.update({
     where: { id },
-    data
+    data: { dayOfWeek, startTime, endTime, timeZone, isActive }
   });
 }
 
-/**
- * Delete an availability window
- */
 async function deleteAvailability(userId, id) {
   const existing = await prisma.availability.findFirst({
-    where: {
-      id,
-      userId
-    }
+    where: { id, userId }
   });
 
   if (!existing) {
@@ -111,9 +78,7 @@ async function deleteAvailability(userId, id) {
     throw error;
   }
 
-  return prisma.availability.delete({
-    where: { id }
-  });
+  return prisma.availability.delete({ where: { id } });
 }
 
 module.exports = {

@@ -1,4 +1,4 @@
-const { PrismaClient } = require('../generated/prisma');
+const { PrismaClient } = require('@prisma/client')
 
 // Singleton Prisma client to avoid exhausting DB connections in dev
 let prisma;
