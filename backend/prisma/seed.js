@@ -4,7 +4,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 async function main() {
-  // Default user
+  // Default user for testing
   const user = await prisma.user.upsert({
     where: { email: 'user@MeetFlow.test' },
     update: {},
