@@ -1,130 +1,167 @@
-# 🚀 MeetFlow — Smart Meeting Scheduling Platform
+# MeetFlow — A Calendly-Style Scheduling Platform
 
-MeetFlow is a **full-stack meeting scheduling application inspired by Calendly** that allows users to create event types, define availability, and share booking links for seamless meeting scheduling.
+MeetFlow is a full-stack scheduling application inspired by Calendly.  
+The goal of this project was to build a clean and functional scheduling platform where users can create event types, define their availability, and allow others to book meetings through a public link.
 
-It eliminates the back-and-forth of emails by letting guests choose available time slots and automatically schedule meetings.
+Instead of going back and forth over email trying to find a time that works, MeetFlow lets people simply pick an available slot and schedule instantly.
 
-Built using a **modern full-stack architecture with Next.js, Express, Prisma, and Neon PostgreSQL**.
-
----
-
-# ✨ Features
-
-### 📅 Smart Scheduling
-- Create customizable **event types**
-- Configure meeting **duration and booking links**
-- Automatic **time slot generation**
-
-### ⏰ Availability Management
-- Define weekly availability windows
-- Prevent overlapping schedules
-- Timezone-aware scheduling
-
-### 👥 Meeting Management
-- View **upcoming meetings**
-- View **past meetings**
-- Cancel meetings easily
-
-### 🌍 Public Booking Pages
-Guests can:
-- Select a date from a calendar
-- Choose an available time slot
-- Submit their details
-- Instantly book meetings
-
-### 📧 Email Invitations
-- Invite collaborators via **email**
-- Implemented using **Nodemailer**
-
-### 🗄 Database
-- Hosted on **Neon PostgreSQL**
-- Managed using **Prisma ORM**
-- Preloaded with sample data using **seed scripts**
+This project was built as part of an SDE Full-Stack assignment and focuses on clean architecture, thoughtful database design, and a user experience similar to modern scheduling tools.
 
 ---
 
-# 🛠 Tech Stack
+## Live Demo
 
-## Frontend
-- **Next.js**
-- **React**
-- **TailwindCSS**
-- **Lucide Icons**
+Frontend (Vercel)  
+https://your-vercel-link.vercel.app
 
-## Backend
-- **Node.js**
-- **Express.js**
-- **REST API Architecture**
-
-## Database
-- **PostgreSQL (Neon Cloud)**
-- **Prisma ORM**
-
-## Tools & Libraries
-- **Nodemailer** – Email invitations
-- **Date-fns** – Date utilities
-- **Prisma Studio** – Database GUI
+Backend API (Render)  
+https://your-render-backend.onrender.com
 
 ---
 
-# 🏗 System Architecture
+## What the Application Can Do
+
+### Event Types
+Users can create different types of meetings such as:
+
+- 30 minute meeting
+- 60 minute deep dive
+- Interview session
+- Quick intro call
+
+Each event type has its own public booking URL.
+
+Example:
 
 ```
-Frontend (Next.js)
-        │
-        │ REST API
-        ▼
-Backend (Express Server)
-        │
-        │ Prisma ORM
-        ▼
-Neon PostgreSQL Database
+/book/30-min-meeting
 ```
+
+From there, guests can schedule directly.
+
+Users can also edit or delete event types at any time.
 
 ---
 
-# 📂 Project Structure
+### Availability Management
+
+Users can define when they are available during the week.
+
+For example:
 
 ```
-calendly-clone/
+Monday – Friday
+9:00 AM – 5:00 PM
+```
+
+The system automatically generates time slots based on these availability windows and the duration of the event type.
+
+Overlap between availability windows is prevented.
+
+---
+
+### Public Booking Page
+
+Guests visiting a booking link can:
+
+1. Select a date from the calendar
+2. View available time slots for that date
+3. Enter their name and email
+4. Book the meeting
+
+Once the booking is confirmed, the meeting is saved and the time slot becomes unavailable.
+
+This prevents double bookings.
+
+---
+
+### Meetings Dashboard
+
+The host can view:
+
+- Upcoming meetings
+- Past meetings
+
+Upcoming meetings can also be cancelled directly from the dashboard.
+
+---
+
+### Email Invitations
+
+The application includes an email invite feature that allows users to invite collaborators.
+
+Email sending is implemented using **Nodemailer**.
+
+Note: SMTP connections are blocked on Render’s free tier, so email works locally but may not send in the deployed version. In production this would typically be replaced with an email API provider like Resend or SendGrid.
+
+---
+
+## Tech Stack
+
+### Frontend
+Next.js  
+React  
+TailwindCSS  
+
+### Backend
+Node.js  
+Express.js  
+
+### Database
+PostgreSQL (Neon)  
+Prisma ORM  
+
+### Other Tools
+Nodemailer for email invitations  
+Date-fns for date utilities  
+
+---
+
+## Project Structure
+
+```
+meetflow
 │
-├── frontend (Next.js App)
+├── frontend
 │   ├── app
 │   ├── components
-│   ├── pages
-│   └── styles
+│   └── pages
 │
-├── backend (Express API)
+├── backend
 │   ├── controllers
-│   ├── middleware
 │   ├── routes
 │   ├── services
-│   ├── prisma
-│   │   ├── schema.prisma
-│   │   └── seed.js
-│   └── server.js
+│   ├── middleware
+│   └── prisma
 │
 └── database
     └── Neon PostgreSQL
 ```
 
+The backend follows a simple separation of concerns:
+
+- **Routes** handle API endpoints
+- **Controllers** manage request logic
+- **Services** contain business logic
+- **Prisma** handles database access
+
 ---
 
-# 🗄 Database Schema
+## Database Design
 
-Core models used in the system:
+The application uses four main models:
 
-### User
-Stores user account and timezone data.
+**User**  
+Represents the host using the scheduling platform.
 
-### EventType
-Represents different meeting types users can create.
+**EventType**  
+Defines different meeting types with duration and booking slug.
 
-### Availability
-Defines when a user is available for meetings.
+**Availability**  
+Stores weekly availability windows.
 
-### Booking
-Stores scheduled meetings.
+**Booking**  
+Represents confirmed meetings.
 
 Relationships:
 
@@ -132,7 +169,7 @@ Relationships:
 User
  ├── EventTypes
  ├── Availability
- └── Bookings (as host)
+ └── Bookings
 
 EventType
  └── Bookings
@@ -140,41 +177,37 @@ EventType
 
 ---
 
-# ⚙ Installation & Setup
+## Running the Project Locally
 
-## 1️⃣ Clone the Repository
+Clone the repository:
 
-```bash
-git clone https://github.com/your-username/calendly-clone.git
-cd calendly-clone
+```
+git clone https://github.com/your-username/meetflow.git
+cd meetflow
 ```
 
----
+Install backend dependencies:
 
-## 2️⃣ Install Dependencies
-
-### Backend
-
-```bash
+```
 cd backend
 npm install
 ```
 
-### Frontend
+Install frontend dependencies:
 
-```bash
+```
 cd frontend
 npm install
 ```
 
 ---
 
-## 3️⃣ Environment Variables
+### Environment Variables
 
-Create `.env` inside the **backend** folder.
+Create a `.env` file in the backend folder:
 
 ```
-DATABASE_URL=your_neon_postgres_url
+DATABASE_URL=your_neon_database_url
 EMAIL_USER=your_email
 EMAIL_PASS=your_email_password
 NEXT_PUBLIC_API_BASE_URL=http://localhost:4000
@@ -182,35 +215,35 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:4000
 
 ---
 
-## 4️⃣ Database Setup
+### Database Setup
 
 Generate Prisma client:
 
-```bash
+```
 npx prisma generate
 ```
 
 Run migrations:
 
-```bash
+```
 npx prisma migrate dev
 ```
 
-Seed the database:
+Seed sample data:
 
-```bash
+```
 node prisma/seed.js
 ```
 
 ---
 
-## 5️⃣ Run the Backend Server
+### Start Backend
 
-```bash
+```
 npm run dev
 ```
 
-Backend will run on:
+Backend runs on:
 
 ```
 http://localhost:4000
@@ -218,14 +251,14 @@ http://localhost:4000
 
 ---
 
-## 6️⃣ Run the Frontend
+### Start Frontend
 
-```bash
+```
 cd frontend
 npm run dev
 ```
 
-Frontend will run on:
+Frontend runs on:
 
 ```
 http://localhost:3000
@@ -233,34 +266,34 @@ http://localhost:3000
 
 ---
 
-# 🔌 API Endpoints
+## API Overview
 
-### Event Types
+Event Types
 
 ```
-GET    /event-types
-POST   /event-types
-PUT    /event-types/:id
+GET /event-types
+POST /event-types
+PUT /event-types/:id
 DELETE /event-types/:id
 ```
 
-### Availability
+Availability
 
 ```
-GET    /availability
-POST   /availability
+GET /availability
+POST /availability
 DELETE /availability/:id
 ```
 
-### Bookings
+Bookings
 
 ```
-GET    /bookings/upcoming
-GET    /bookings/past
+GET /bookings/upcoming
+GET /bookings/past
 DELETE /bookings/:id
 ```
 
-### Slots
+Slots
 
 ```
 GET /slots?slug={eventSlug}&date={date}
@@ -268,31 +301,21 @@ GET /slots?slug={eventSlug}&date={date}
 
 ---
 
-# 📸 Screenshots
+## Things I Would Improve With More Time
 
-Add screenshots of:
+Some features that would be great next steps:
 
-- Scheduling dashboard
-- Availability management
-- Meeting dashboard
-- Public booking page
-
----
-
-# 🚀 Future Improvements
-
-Potential enhancements for production:
-
-- 🔐 Authentication (JWT / OAuth)
-- 📅 Google Calendar integration
-- 🎥 Zoom / Google Meet links
-- 👥 Team scheduling
+- Authentication and multi-user accounts
+- Google Calendar integration
+- Automatic meeting links (Zoom / Google Meet)
+- Rescheduling existing meetings
+- Payment support for paid bookings
 
 ---
 
-# 👨‍💻 Author
+## Author
 
-**Nibhi Garg**
+Nibhi Garg
 
 GitHub  
 https://github.com/Nibhi16
