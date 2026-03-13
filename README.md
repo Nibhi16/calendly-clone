@@ -11,11 +11,7 @@ This project was built as part of an SDE Full-Stack assignment and focuses on cl
 
 ## Live Demo
 
-Frontend (Vercel)  
-https://your-vercel-link.vercel.app
-
-Backend API (Render)  
-https://your-render-backend.onrender.com
+deployed link :- https://meet-flow-two.vercel.app/
 
 ---
 
